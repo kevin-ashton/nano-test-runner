@@ -16,9 +16,9 @@ A simple test runner for node for high developer productivity
 
 2. Create a file and add the following
 
-```ts
-import { describe, test } from 'nano-test-runner';
-import * as assert from 'assert';
+```js
+const { describe, test } = require('nano-test-runner');
+const assert = require('assert');
 
 describe('Group 1', () => {
   test('Test 1', () => {
@@ -36,9 +36,9 @@ describe('Group 1', () => {
 ## Full Example
 
 
-```ts
-import { describe, test, otest, xtest, setOptions } from 'nano-test-runner';
-import * as assert from 'assert';
+```js
+const { describe, test, otest, xtest, setOptions } = require('nano-test-runner');
+const assert = require('assert');
 
 /*
  CONFIG (optional)
@@ -109,7 +109,7 @@ Note: `xtest` and `otest` where used in place of the somewhat common `test.skip`
 For small to medium projects normal test runners are problematic for various reasons. The main problem being developers tend to vastly underestimate the amount of cognitive overhead test runners add. Consider the following:
 
 * Most test runners have large surface API. Developers are human and can only retain a finite number of code patterns in their working memory. Don't underestimate how much productivity is lost even with the best developers as result of this.
-* Awkward debug flows. This is mostly due as result of indirection caused by the way test runners scan directories and then executing the code in a wrapped code block (so that they can inject their globals such as `describe`). Granted you can configure debuggers to work in this environment but that extra steps results in many developers just using a logging debug strategy. Logging is fine in many instances but for complex bugs a debugger speeds things up.
+* Awkward debug flows. This is mostly due as result of indirection caused by the way test runners scan directories and then execute the code in a wrapped code block (so that they can inject their globals such as `describe`). Granted you can configure debuggers to work in this environment but that extra steps results in many developers just using a logging debug strategy. Logging is fine in many instances but for complex bugs a debugger speeds things up.
 * Typically don't handle
 * Globals such as `describe`. Much has been written on the challenges global variables. Suffice it to say the problems still exist with with test runners, though the larger problem is the cognitive load added to the developer as result of having to magically know what globals exists.
 

@@ -1,7 +1,7 @@
 {
   "name": "nano-test-runner",
-  "version": "1.0.0",
-  "description": "",
+  "version": "1.0.1",
+  "description": "A simple test runner for node for high developer productivity",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "scripts": {
@@ -13,9 +13,22 @@
     "url": "https://github.com/kevin-ashton/nano-test-runner/issues"
   },
   "homepage": "https://github.com/kevin-ashton/nano-test-runner#readme",
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": [
+    "mocha",
+    "test",
+    "bdd",
+    "tdd",
+    "tap",
+    "testing",
+    "chai",
+    "assertion",
+    "tape",
+    "jasmine",
+    "karma",
+    "runner"
+  ],
+  "author": "Kevin M Ashton",
+  "license": "MIT",
   "devDependencies": {
     "@types/node": "^14.0.5",
     "prettier": "^2.0.5",
