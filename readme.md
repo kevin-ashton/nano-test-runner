@@ -10,30 +10,92 @@ A simple test runner for node for high developer productivity
 * Written in typescript so intellisense works great.
 * No dependencies. Extremely small.
 
-
-## Limitations
-
-* Currently does not scan your directories to find your test files. Rather you need to manually create a file that imports your test files. This is more work but it allows us to eliminate globals and provides easy debugging. In the future the ability to automatically generate this test entry point will likely be added..
-* Currently does not have watch functionality.
-
 ## Usage
 
 1. Add to project: `yarn add nano-test-runner` or `npm install nano-test-runner`
 
-2. Create a file an import
+2. Create a file and add the following
 
 ```ts
+import { describe, test } from '../index';
+import * as assert from 'assert';
 
+describe('Group 1', () => {
+  test('Test 1', () => {
+    assert.equal(1, 1, 'Numbers should equal');
+    assert.equal('hello', 'hello', 'Strings should be equal');
+  });
+});
+```
+
+3. Run the file `node example-test.js`
+
+
+## Full Example
+
+
+```ts
+import { describe, test, otest, xtest, setOptions } from '../index';
+import * as assert from 'assert';
+
+// You can set some options if you want
+// runPattern - run all the test at once or one right after another
+//   options: 'parallel' | 'serial' (default 'parallel')
+// verbose - suppress console.log, console.warn, console.error during the run
+//   options: true | false  (default true)
+setOptions({ runPattern: 'parallel', verbose: false });
+
+describe('Group 1', () => {
+  test('Sync Example', () => {
+    assert.equal('hello', 'hello', 'Strings should match');
+    assert.equal('world', 'world', 'Strings should match');
+  });
+
+  test('Sync Example with expected error', () => {
+    assert.rejects(() => {
+      // code...
+      throw new Error('Expected sync error');
+    });
+  });
+
+  test('Async Example', async () => {
+    // Notice the only thing changed was making this an async function
+    await new Promise((r) => setTimeout(() => r(), 500));
+  });
+
+  test('Async Example with Expected Error', async () => {
+    await assert.rejects(async () => {
+      // Notice we now await the assert.reject
+      throw new Error('Error we are expecting');
+    });
+  });
+
+  test('Example Error', () => {
+    assert.equal(5, 10);
+  });
+
+  xtest('Example Test Being Skipped', () => {
+    // This test is currently being skipped due to the xtest
+    assert.equal(5, 5);
+  });
+
+  /*
+  // Currently commented out but if uncommitted would only run this test
+  otest('Example Test with Only', () => {
+    assert.equal(5, 5);
+  });
+  */
+});
 
 ```
 
-3. Run the file `node dist/example-test.js`
-
-`describe` - breaks your tests into groups
-
-`test` - will accept normal or async functions
+Note: `xtest` and `otest` where used in place of the somewhat common `test.skip` and `test.only`. Testing is meant to be fast and adding and removing a character at the beginning of line speeds things up considerably.
 
 
+## Limitations
+
+* Currently does not scan your directories to find your test files. Rather you need to manually create a file that imports your test files. Granted this is more work but it allows us to eliminate globals and provides an easy debugging experience. In the future the ability to automatically generate this test entry point will likely be added.
+* Currently does not have watch functionality.
 
 
 ## Why
@@ -49,14 +111,14 @@ For small to medium projects normal test runners are problematic for various rea
 
 * Global Variable - `describe` , `test` and other helpers must be imported intentionally. Everything is meant to be very explicit.
 * `beforeEach` - Once again contributes to the indirection of how the code is being executed, which in turns adds to the cognitive overload.
-* Test Coverage - There are great use cases for this but the reality is most projects lack sufficient resources to implement this feature. In addition too many teams implement them early on when large architectural decisions are being made resulting in a significant amount of time being lost reworking the tests. These tend to make more sense for a mission critical (aka cannot tolerate many bugs) after the code base has begun to mature. For projects where this make sense they should transition to library that supports this.
+* Test Coverage - There are great use cases for this but the reality is most projects lack sufficient resources to implement this feature. In addition too many teams implement them early on when large architectural decisions are being made resulting in a significant amount of time being lost reworking the tests. Coverage tests can make for a mission critical (aka cannot tolerate many bugs) after the code base has begun to mature.
 
 ### Potential Future Additions
 
 * Print out "In Progress" with the test description when executing
 * Add `xdescribe` and `odescribe` functionality
 * Directory scanner that generate test files that can easily be debugged with watch functionality so it runs on file changes
-* Max execution time for async tests
+* Add a max execution time option for async tests
 
 ### Final Note
 
