@@ -1,0 +1,19 @@
+{
+  "name": "nano-test-runner",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "scripts": {
+    "ts-watch": "tsc -w",
+    "ts-build": "tsc",
+    "test": ""
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^14.0.5",
+    "prettier": "^2.0.5",
+    "typescript": "^3.9.3"
+  }
+}
