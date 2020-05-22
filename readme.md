@@ -17,7 +17,7 @@ A simple test runner for node for high developer productivity
 2. Create a file and add the following
 
 ```ts
-import { describe, test } from '../index';
+import { describe, test } from 'nano-test-runner';
 import * as assert from 'assert';
 
 describe('Group 1', () => {
@@ -35,14 +35,16 @@ describe('Group 1', () => {
 
 
 ```ts
-import { describe, test, otest, xtest, setOptions } from '../index';
+import { describe, test, otest, xtest, setOptions } from 'nano-test-runner';
 import * as assert from 'assert';
 
-// You can set some options if you want
-// runPattern - run all the test at once or one right after another
-//   options: 'parallel' | 'serial' (default 'parallel')
-// verbose - suppress console.log, console.warn, console.error during the run
-//   options: true | false  (default true)
+/*
+ CONFIG (optional)
+   runPattern - run all the test at once or one right after another
+     options: 'parallel' | 'serial' (default 'parallel')
+   verbose - suppress console.log, console.warn, console.error during the test run
+     options: true | false  (default true)
+*/
 setOptions({ runPattern: 'parallel', verbose: false });
 
 describe('Group 1', () => {

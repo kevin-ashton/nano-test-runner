@@ -1,11 +1,13 @@
 import { describe, test, otest, xtest, setOptions } from '../index';
 import * as assert from 'assert';
 
-// You can set some options if you want
-// runPattern - run all the test at once or one right after another
-//   options: 'parallel' | 'serial' (default 'parallel')
-// verbose - suppress console.log, console.warn, console.error during the run
-//   options: true | false  (default true)
+/*
+ CONFIG (optional)
+   runPattern - run all the test at once or one right after another
+     options: 'parallel' | 'serial' (default 'parallel')
+   verbose - suppress console.log, console.warn, console.error during the test run
+     options: true | false  (default true)
+*/
 setOptions({ runPattern: 'parallel', verbose: false });
 
 describe('Group 1', () => {
