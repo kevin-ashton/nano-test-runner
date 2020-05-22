@@ -28,6 +28,8 @@ describe('Group 1', () => {
 });
 ```
 
+<img src="https://github.com/kevin-ashton/nano-test-runner/blob/master/assets/simple-example.png?raw=true" width="600" />
+
 3. Run the file `node example-test.js`
 
 
@@ -90,6 +92,8 @@ describe('Group 1', () => {
 });
 
 ```
+
+<img src="https://github.com/kevin-ashton/nano-test-runner/blob/master/assets/full-example.png?raw=true" width="600" />
 
 Note: `xtest` and `otest` where used in place of the somewhat common `test.skip` and `test.only`. Testing is meant to be fast and adding and removing a character at the beginning of line speeds things up considerably.
 
