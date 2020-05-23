@@ -17,7 +17,7 @@ describe('Group 1', () => {
   });
 
   test('Sync Example with expected error', () => {
-    assert.rejects(() => {
+    assert.throws(() => {
       // code...
       throw new Error('Expected sync error');
     });

@@ -28,9 +28,10 @@ describe('Group 1', () => {
 });
 ```
 
+3. Run the file `node example-test.js`
 <img src="https://github.com/kevin-ashton/nano-test-runner/blob/master/assets/simple-example.png?raw=true" width="600" />
 
-3. Run the file `node example-test.js`
+
 
 
 ## Full Example
@@ -56,7 +57,7 @@ describe('Group 1', () => {
   });
 
   test('Sync Example with expected error', () => {
-    assert.rejects(() => {
+    assert.throws(() => {
       // code...
       throw new Error('Expected sync error');
     });
