@@ -184,10 +184,9 @@ function printSummaryAndFinish() {
     originalConsoleLog(`${color.red('|')}`);
     errors.forEach((e) => {
       originalConsoleLog(`${color.red(`| Test: ${e.description}`)}`);
-      originalConsoleLog(`${color.red(`| Error: ${e.error.message}`)}`);
+      originalConsoleLog(`${color.red(`| Error: ${typeof e.error === 'string' ? e.error : e.error.message}`)}`);
       originalConsoleLog(`${color.red('|')}`);
     });
-
     originalConsoleLog(`${color.red('_________')}`);
   }
 
