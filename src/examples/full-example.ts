@@ -5,10 +5,10 @@ import * as assert from 'assert';
  CONFIG (optional)
    runPattern - run all the test at once or one right after another
      options: 'parallel' | 'serial' (default 'parallel')
-   verbose - suppress console.log, console.warn, console.error during the test run
+   suppressConsole - suppress console.log, console.warn, console.error during the test run
      options: true | false  (default true)
 */
-setOptions({ runPattern: 'parallel', verbose: false });
+setOptions({ runPattern: 'parallel', suppressConsole: true });
 
 describe('Group 1', () => {
   test('Sync Example', () => {
@@ -25,12 +25,14 @@ describe('Group 1', () => {
 
   test('Async Example', async () => {
     // Notice the only thing changed was making this an async function
+    // code...
     await new Promise((r) => setTimeout(() => r(), 500));
   });
 
   test('Async Example with Expected Error', async () => {
     await assert.rejects(async () => {
-      // Notice we now await the assert.reject
+      // Notice we await the assert.reject
+      // code...
       throw new Error('Error we are expecting');
     });
   });

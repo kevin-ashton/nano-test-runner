@@ -6,7 +6,7 @@ import { DescribeBlock, testFn, Config } from './helpers/model';
 
 let config: Config = {
   runPattern: 'parallel',
-  verbose: false
+  suppressConsole: true
 };
 let totalPassed = 0;
 let totalFailed = 0;
@@ -96,7 +96,7 @@ function processTest(description: string, fn: testFn, options: { skip: boolean; 
 
 async function startEngine() {
   // suppress output if needed
-  if (!config.verbose) {
+  if (config.suppressConsole) {
     console.log = () => {};
     console.warn = () => {};
     console.error = () => {};

@@ -18,6 +18,6 @@ export interface DescribeBlock {
 }
 
 export interface Config {
-  verbose: boolean;
+  suppressConsole: boolean;
   runPattern: 'parallel' | 'serial';
 }
