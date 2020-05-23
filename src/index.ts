@@ -1,11 +1,11 @@
-import { DescribeBlock, testFn, Config } from './helpers/model';
+import { GroupBlock, executeFn, Config } from './helpers/model';
 
 /* *************
  * VARIABLES
  * ************* */
 
 let config: Config = {
-  runPattern: 'parallel',
+  runPattern: 'serial',
   suppressConsole: true
 };
 let totalPassed = 0;
@@ -14,7 +14,7 @@ let totalSkipped = 0;
 let totalTests = 0;
 let onlyActivated = false;
 let pendingStartEngineTimeout;
-const workQueue: DescribeBlock[] = [];
+const workQueue: GroupBlock[] = [];
 
 // Monkey patch console to suppress errors and random console.logs
 const originalConsoleLog = console.log;
@@ -27,15 +27,19 @@ const originalConsoleWarn = console.warn;
 
 export const setOptions = (c: Config) => (config = c);
 
-export function test(description: string, fn: testFn) {
+export function test(description: string, fn: executeFn) {
   processTest(description, fn, { only: false, skip: false });
 }
 
-export function xtest(description: string, fn: testFn) {
+export function run(fn: executeFn) {
+  processRun(fn);
+}
+
+export function xtest(description: string, fn: executeFn) {
   processTest(description, fn, { only: false, skip: true });
 }
 
-export function otest(description: string, fn: testFn) {
+export function otest(description: string, fn: executeFn) {
   onlyActivated = true;
   processTest(description, fn, { only: true, skip: false });
 }
@@ -48,7 +52,7 @@ export function describe(description: string, fn: () => void) {
   clearTimeout(pendingStartEngineTimeout);
   pendingStartEngineTimeout = setTimeout(() => startEngine(), 200);
 
-  workQueue.push({ description, tests: [] });
+  workQueue.push({ description, executeQueue: [] });
   fn();
 }
 
@@ -56,11 +60,26 @@ export function describe(description: string, fn: () => void) {
  * CORE
  * ************* */
 
-function processTest(description: string, fn: testFn, options: { skip: boolean; only: boolean }) {
+function processRun(fn: executeFn) {
+  const describeIndex = workQueue.length - 1;
+  workQueue[describeIndex].executeQueue.push({
+    type: 'run',
+    fn: async () => {
+      try {
+        await fn();
+      } catch (e) {
+        originalConsoleError('Trouble executing run block', e);
+      }
+    }
+  });
+}
+
+function processTest(description: string, fn: executeFn, options: { skip: boolean; only: boolean }) {
   totalTests += 1;
   const describeIndex = workQueue.length - 1;
-  const testIndex = workQueue[describeIndex].tests.length;
-  workQueue[describeIndex].tests.push({
+  const testIndex = workQueue[describeIndex].executeQueue.length;
+  workQueue[describeIndex].executeQueue.push({
+    type: 'test',
     description,
     only: options.only,
     skip: options.skip,
@@ -79,7 +98,8 @@ function processTest(description: string, fn: testFn, options: { skip: boolean; 
         await fn();
       } catch (e) {
         hasError = true;
-        workQueue[describeIndex].tests[testIndex].error = e;
+        // @ts-ignore
+        workQueue[describeIndex].executeQueue[testIndex].error = e;
       }
 
       if (hasError) {
@@ -88,8 +108,10 @@ function processTest(description: string, fn: testFn, options: { skip: boolean; 
         totalPassed += 1;
       }
 
-      workQueue[describeIndex].tests[testIndex].passed = !hasError;
-      workQueue[describeIndex].tests[testIndex].timeElapsedMS = Date.now() - start;
+      // @ts-ignore
+      workQueue[describeIndex].executeQueue[testIndex].passed = !hasError;
+      // @ts-ignore
+      workQueue[describeIndex].executeQueue[testIndex].timeElapsedMS = Date.now() - start;
     }
   });
 }
@@ -107,17 +129,19 @@ async function startEngine() {
     for (let i = 0; i < workQueue.length; i++) {
       const wq = workQueue[i];
       reportDescribe(i);
-      for (let k = 0; k < wq.tests.length; k++) {
-        const t = wq.tests[k];
+      for (let k = 0; k < wq.executeQueue.length; k++) {
+        const t = wq.executeQueue[k];
         await t.fn();
-        reportTest(i, k);
+        if (t.type === 'test') {
+          reportTest(i, k);
+        }
       }
       originalConsoleLog('');
     }
   } else if (config.runPattern === 'parallel') {
     const fns: any = [];
     workQueue.forEach((wq) => {
-      wq.tests.forEach((t) => {
+      wq.executeQueue.forEach((t) => {
         fns.push(t.fn());
       });
     });
@@ -139,8 +163,10 @@ async function startEngine() {
     // Print results
     workQueue.forEach((wq, index) => {
       reportDescribe(index);
-      wq.tests.forEach((t, tIndex) => {
-        reportTest(index, tIndex);
+      wq.executeQueue.forEach((t, tIndex) => {
+        if (t.type === 'test') {
+          reportTest(index, tIndex);
+        }
       });
       originalConsoleLog('');
     });
@@ -152,7 +178,12 @@ async function startEngine() {
 }
 
 function reportTest(describeIndex: number, testIndex: number) {
-  const t = workQueue[describeIndex].tests[testIndex];
+  const t = workQueue[describeIndex].executeQueue[testIndex];
+  if (t.type !== 'test') {
+    originalConsoleError('Should not be running a report for a test on an executeQueue item that is not a test');
+    return;
+  }
+
   if (t.skip || (onlyActivated && !t.only)) {
     originalConsoleLog(`${color.gray(`  - ${t.description}`)} `);
   } else if (t.passed) {
@@ -170,8 +201,8 @@ function printSummaryAndFinish() {
   // Extract any errors for display at the end
   const errors: { description: string; error: any }[] = [];
   workQueue.forEach((wq) =>
-    wq.tests.forEach((t) => {
-      if (t.error) {
+    wq.executeQueue.forEach((t) => {
+      if (t.type === 'test' && t.error) {
         errors.push({ description: t.description, error: t.error });
       }
     })

@@ -1,16 +1,20 @@
-import { describe, test, otest, xtest, setOptions } from '../index';
+import { describe, test, otest, xtest, setOptions, run } from '../index';
 import * as assert from 'assert';
 
 /*
  CONFIG (optional)
    runPattern - run all the test at once or one right after another
-     options: 'parallel' | 'serial' (default 'parallel')
+     options: 'parallel' | 'serial' (default 'serial')
    suppressConsole - suppress console.log, console.warn, console.error during the test run
      options: true | false  (default true)
 */
-setOptions({ runPattern: 'parallel', suppressConsole: true });
+setOptions({ runPattern: 'serial', suppressConsole: true });
 
 describe('Group 1', () => {
+  run(() => {
+    // Run block that can be used setup test
+  });
+
   test('Sync Example', () => {
     assert.equal('hello', 'hello', 'Strings should match');
     assert.equal('world', 'world', 'Strings should match');
@@ -21,6 +25,11 @@ describe('Group 1', () => {
       // code...
       throw new Error('Expected sync error');
     });
+  });
+
+  run(async () => {
+    // Async run block that can be used setup test
+    await new Promise((r) => setTimeout(() => r(), 300));
   });
 
   test('Async Example', async () => {

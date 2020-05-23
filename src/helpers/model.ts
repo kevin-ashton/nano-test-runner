@@ -1,10 +1,11 @@
-type testFn1 = () => void;
-type testFn2 = () => Promise<void>;
-export type testFn = testFn1 | testFn2;
+type executeFn1 = () => void;
+type executeFn2 = () => Promise<void>;
+export type executeFn = executeFn1 | executeFn2;
 
 export interface Test {
+  type: 'test';
   description: string;
-  fn: testFn;
+  fn: executeFn;
   skip?: boolean;
   timeElapsedMS?: number;
   only?: boolean;
@@ -12,9 +13,16 @@ export interface Test {
   error?: any;
 }
 
-export interface DescribeBlock {
+export interface Run {
+  type: 'run';
+  fn: executeFn;
+}
+
+type ExecuteQueueItem = Test | Run;
+
+export interface GroupBlock {
   description: string;
-  tests: Test[];
+  executeQueue: ExecuteQueueItem[];
 }
 
 export interface Config {
