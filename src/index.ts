@@ -18,23 +18,8 @@ const workQueue: DescribeBlock[] = [];
 
 // Monkey patch console to suppress errors and random console.logs
 const originalConsoleLog = console.log;
-console.log = (...args: any) => {
-  if (config.verbose) {
-    originalConsoleLog(...args);
-  }
-};
 const originalConsoleError = console.error;
-console.error = (...args: any) => {
-  if (config.verbose) {
-    originalConsoleError(...args);
-  }
-};
 const originalConsoleWarn = console.warn;
-console.warn = (...args: any) => {
-  if (config.verbose) {
-    originalConsoleWarn(...args);
-  }
-};
 
 /* *************
  * EXPORTS
@@ -110,6 +95,13 @@ function processTest(description: string, fn: testFn, options: { skip: boolean; 
 }
 
 async function startEngine() {
+  // suppress output if needed
+  if (!config.verbose) {
+    console.log = () => {};
+    console.warn = () => {};
+    console.error = () => {};
+  }
+
   originalConsoleLog('');
   if (config.runPattern === 'serial') {
     for (let i = 0; i < workQueue.length; i++) {
