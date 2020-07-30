@@ -27,12 +27,12 @@ const originalConsoleWarn = console.warn;
 
 export const setOptions = (c: Config) => (config = c);
 
-export function test(description: string, fn: executeFn) {
-  processTest(description, fn, { only: false, skip: false });
-}
-
 export function run(fn: executeFn) {
   processRun(fn);
+}
+
+export function test(description: string, fn: executeFn) {
+  processTest(description, fn, { only: false, skip: false });
 }
 
 export function xtest(description: string, fn: executeFn) {

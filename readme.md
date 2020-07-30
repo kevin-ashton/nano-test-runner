@@ -134,6 +134,8 @@ For small to medium projects normal test runners are problematic for various rea
 
 * Print out "In Progress" with the test description when executing
 * Add `xdescribe` and `odescribe` functionality
+* Allow `describe` nesting
+* Pending test or rather a test without a function Example: `test('should do x')`
 * Directory scanner that generate test files that can easily be debugged with watch functionality so it runs on file changes
 * Add a max execution time option for async tests
 
