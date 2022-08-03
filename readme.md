@@ -137,6 +137,30 @@ For small to medium projects normal test runners are problematic for various rea
 * Directory scanner that generate test files that can easily be debugged with watch functionality so it runs on file changes
 * Add a max execution time option for async tests
 
-### Final Note
+### Example Directory Scan
 
-I think many people want to love testing more. The reality is though our tool chains have become so heavy and frankly the time alloted to testing so limited that many developers steer away from it. I don't think this is a problem of intelligence or ability but rather the reality of the constrained time most people work under.
+Example if you want to run tests by scanning for files
+
+```ts
+import fg from "fast-glob";
+import path from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+async function main() {
+  const r1 = await fg(["**/**.test.js"], {
+    cwd: __dirname,
+    ignore: ["**/node_modules/**"],
+    objectMode: true,
+  });
+
+  for (let i = 0; i < r1.length; i++) {
+    const f = r1[i];
+    import(`${__dirname}/${f?.path}`);
+  }
+}
+
+await main();
+
