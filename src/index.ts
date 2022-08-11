@@ -14,7 +14,7 @@ let totalSkipped = 0;
 let totalTests = 0;
 let onlyActivated = false;
 let pendingStartEngineTimeout;
-const workQueue: GroupBlock[] = [];
+let workQueue: GroupBlock[] = [];
 
 // Monkey patch console to suppress errors and random console.logs
 const originalConsoleLog = console.log;
@@ -44,7 +44,36 @@ export function otest(description: string, fn: executeFn) {
   processTest(description, fn, { only: true, skip: false });
 }
 
+let oDescribePresent = false;
+
+export function xdescribe(description: string, fn: () => void) {
+  originalConsoleLog(color.gray(`SKIPPING: ${description}`));
+}
+
+export function odescribe(description: string, fn: () => void) {
+  oDescribePresent = true;
+  workQueue = [];
+  originalConsoleLog(color.yellow(`------------------------------------------`));
+  originalConsoleLog(color.yellow(`All other describe groups will be ignored!`));
+  originalConsoleLog(color.yellow(`------------------------------------------`));
+
+  if (isAsyncFn(fn)) {
+    throw new Error(`Cannot use async functions for 'describe'. Please use normal or async functions in 'test'`);
+  }
+
+  clearTimeout(pendingStartEngineTimeout);
+  pendingStartEngineTimeout = setTimeout(() => startEngine(), 200);
+
+  workQueue.push({ description, executeQueue: [] });
+  fn();
+}
+
 export function describe(description: string, fn: () => void) {
+
+  if(oDescribePresent) {
+    return;
+  }
+
   if (isAsyncFn(fn)) {
     throw new Error(`Cannot use async functions for 'describe'. Please use normal or async functions in 'test'`);
   }

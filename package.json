@@ -1,13 +1,13 @@
 {
   "name": "nano-test-runner",
-  "version": "1.2.1",
+  "version": "1.2.3",
   "description": "A simple test runner for node for high developer productivity",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "scripts": {
     "ts-watch": "tsc -w",
     "ts-build": "tsc",
-    "test": "yarn ts-build && node dist/examples/simple-example.js ; node dist/examples/full-example.js"
+    "test": "yarn ts-build && node dist/examples/full-example.js"
   },
   "bugs": {
     "url": "https://github.com/kevin-ashton/nano-test-runner/issues"

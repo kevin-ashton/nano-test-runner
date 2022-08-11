@@ -1,4 +1,4 @@
-import { describe, test, otest, xtest, setOptions, run } from '../index';
+import { xdescribe, odescribe, describe, test, otest, xtest, setOptions, run } from '../index';
 import * as assert from 'assert';
 
 /*
@@ -16,8 +16,8 @@ describe('Group 1', () => {
   });
 
   test('Sync Example', () => {
-    assert.equal('hello', 'hello', 'Strings should match');
-    assert.equal('world', 'world', 'Strings should match');
+    assert.strictEqual('hello', 'hello', 'Strings should match');
+    assert.strictEqual('world', 'world', 'Strings should match');
   });
 
   test('Sync Example with expected error', () => {
@@ -47,18 +47,34 @@ describe('Group 1', () => {
   });
 
   test('Example Error', () => {
-    assert.equal(5, 10);
+    assert.strictEqual(5, 10);
   });
 
   xtest('Example Test Being Skipped', () => {
     // This test is currently being skipped due to the xtest
-    assert.equal(5, 5);
+    assert.strictEqual(5, 5);
   });
 
   /*
   // Currently commented out but if uncommitted would only run this test
   otest('Example Test with Only', () => {
-    assert.equal(5, 5);
+    assert.strictEqual(5, 5);
   });
   */
 });
+
+
+describe('Group 2', () => {
+  run(() => {
+    // Run block that can be used setup test
+    console.log('Run block in group 2');
+  });
+
+  test('Another random test 1', () => {
+    assert.strictEqual('hello', 'hello', 'Strings should match');
+  });
+
+  test('Another random test 2', () => {
+    assert.strictEqual('hello', 'hello', 'Strings should match');
+  });
+})
