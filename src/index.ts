@@ -12,6 +12,7 @@ let totalPassed = 0;
 let totalFailed = 0;
 let totalSkipped = 0;
 let totalTests = 0;
+let startEngineTimeMs = 0;
 let onlyActivated = false;
 let pendingStartEngineTimeout;
 let workQueue: GroupBlock[] = [];
@@ -25,12 +26,18 @@ const originalConsoleWarn = console.warn;
  * EXPORTS
  * ************* */
 
+// Forces them to put a string
+export function basicAssert(v1: boolean, msg: string) {
+  if (!v1) {
+    throw msg;
+  }
+}
 
 export const originalConsole = {
   log: originalConsoleLog,
   warn: originalConsoleWarn,
   error: originalConsoleError
-}
+};
 
 export const setOptions = (c: Config) => (config = c);
 
@@ -76,8 +83,7 @@ export function odescribe(description: string, fn: () => void) {
 }
 
 export function describe(description: string, fn: () => void) {
-
-  if(oDescribePresent) {
+  if (oDescribePresent) {
     return;
   }
 
@@ -153,6 +159,8 @@ function processTest(description: string, fn: executeFn, options: { skip: boolea
 }
 
 async function startEngine() {
+
+  startEngineTimeMs = Date.now();
   // suppress output if needed
   if (config.suppressConsole) {
     console.log = () => {};
@@ -261,6 +269,7 @@ function printSummaryAndFinish() {
   originalConsoleLog(`Total Tests Passed:  ${color.green(`${totalPassed}`)}`);
   originalConsoleLog(`Total Tests Failed:  ${color.red(`${totalFailed}`)}`);
   originalConsoleLog(`Total Tests Skipped: ${color.yellow(`${totalSkipped}`)}`);
+  originalConsoleLog(`Total Time: ${color.cyan(`${Date.now() - startEngineTimeMs }ms`)}`);
   if (errors.length > 0) {
     originalConsoleLog('');
     originalConsoleLog(color.red('----------'));
