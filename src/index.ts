@@ -25,6 +25,13 @@ const originalConsoleWarn = console.warn;
  * EXPORTS
  * ************* */
 
+
+export const originalConsole = {
+  log: originalConsoleLog,
+  warn: originalConsoleWarn,
+  error: originalConsoleError
+}
+
 export const setOptions = (c: Config) => (config = c);
 
 export function test(description: string, fn: executeFn) {
