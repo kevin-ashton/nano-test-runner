@@ -1,10 +1,21 @@
-import { xdescribe, odescribe, describe, it, oit, xit, setOptions, run, basicAssert, basicStory } from '../index';
+import {
+  xdescribe,
+  odescribe,
+  describe,
+  it,
+  oit,
+  xit,
+  setOptions,
+  run,
+  basicAssert,
+  basicStory,
+  originalConsole as console,
+  basicExpectReject
+} from '../index';
 import * as assert from 'assert';
 
 /*
  CONFIG (optional)
-   runPattern - run all the test at once or one right after another
-     options: 'parallel' | 'serial' (default 'serial')
    suppressConsole - suppress console.log, console.warn, console.error during the test run
      options: true | false  (default true)
 */
@@ -38,11 +49,23 @@ describe('Group 1', () => {
     await new Promise<void>((r) => setTimeout(() => r(), 500));
   });
 
+  const EXAMPLE_ERROR_MESSAGE = 'EXAMPLE_ERROR_MESSAGE';
+
   it('Async Example with Expected Error', async () => {
-    await assert.rejects(async () => {
-      // Notice we await the assert.reject
-      // code...
-      throw new Error('Error we are expecting');
+    // basicExpectReject will fail if
+    // 1) nothing is rejected
+    // 2) if something is thrown during validateError
+
+    await basicExpectReject({
+      fn: async () => {
+        // code...
+        throw new Error(EXAMPLE_ERROR_MESSAGE);
+      },
+      validateError: (e) => {
+        // Ensure the error is what you expect
+        basicAssert(e.message === EXAMPLE_ERROR_MESSAGE, 'h7gNKWkPS');
+      },
+      lid: 'RW_IV4dSz'
     });
   });
 

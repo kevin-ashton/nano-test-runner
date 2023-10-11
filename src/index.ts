@@ -48,6 +48,29 @@ export function basicStory(msg: string, v1: boolean) {
   }
 }
 
+export async function basicExpectReject(p: {
+  fn: () => Promise<void>;
+  validateError: (e: any) => void;
+  lid: string;
+}): Promise<void> {
+  let errorThrown = false;
+  try {
+    await p.fn();
+  } catch (e) {
+    errorThrown = true;
+    p.validateError(e)
+  }
+  if(errorThrown === false) {
+    throw new Error(`Promise was not rejected as expected. lid: ${p.lid}`)
+  }
+}
+
+// export function await basicExpectReject(async () => {
+//     // If this doesn't throw than error
+//   }, e => {
+//     // If this throws also throw an error
+//   }, 'X-WtS2xdg')
+
 export const originalConsole = {
   log: originalConsoleLog,
   warn: originalConsoleWarn,
