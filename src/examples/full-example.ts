@@ -16,8 +16,8 @@ describe('Group 1', () => {
   });
 
   it('Sync Example', () => {
-    basicAssert('Strings should match', 'hello' === 'hello');
-    basicAssert('Strings should match 2', 'world' === 'world');
+    basicAssert('hello' === 'hello', 'Strings should match');
+    basicAssert('world' === 'world');
   });
 
   it('Sync Example with expected error', () => {

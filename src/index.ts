@@ -26,16 +26,19 @@ const originalConsoleWarn = console.warn;
  * ************* */
 
 // Forces them to put a string
-export function basicAssert(msg: string, v1: boolean) {
+export function basicAssert(v1: boolean, msg?: string) {
   if (!v1) {
-    throw msg;
+    throw msg || 'basicAssert generic error';
   }
-  const x = workQueue[currentDescribeIndex].executeQueue[currentTestIndex];
-  if (x && x.type === 'test') {
-    if (!x.basicAssertDescriptions) {
-      x.basicAssertDescriptions = [];
+
+  if (msg) {
+    const x = workQueue[currentDescribeIndex].executeQueue[currentTestIndex];
+    if (x && x.type === 'test') {
+      if (!x.basicAssertDescriptions) {
+        x.basicAssertDescriptions = [];
+      }
+      x.basicAssertDescriptions.push(msg);
     }
-    x.basicAssertDescriptions.push(msg);
   }
 }
 
