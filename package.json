@@ -7,7 +7,6 @@
   "scripts": {
     "ts-watch": "tsc -w",
     "ts-build": "tsc",
-    "publish": "npm publish",
     "test": "yarn ts-build && node dist/examples/full-example.js"
   },
   "bugs": {
