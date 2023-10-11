@@ -182,6 +182,7 @@ async function startEngine() {
   // suppress output if needed
   if (config.suppressConsole) {
     console.log = () => {};
+    console.info = () => {};
     console.warn = () => {};
     console.error = () => {};
   }
