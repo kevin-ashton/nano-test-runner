@@ -11,6 +11,7 @@ export interface Test {
   only?: boolean;
   passed?: boolean;
   error?: any;
+  basicAssertDescriptions?: string[]
 }
 
 export interface Run {
@@ -27,5 +28,4 @@ export interface GroupBlock {
 
 export interface Config {
   suppressConsole: boolean;
-  runPattern: 'parallel' | 'serial';
 }

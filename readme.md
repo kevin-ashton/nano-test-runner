@@ -6,7 +6,6 @@ A simple test runner for node for high developer productivity
 
 * Runs in normal javascript! No annoying test runner wrapper env required. Debug the file like you would any other!
 * Handles async or normal functions automatically. You don't have to handle functions differently.
-* Run tests in 'parallel' or 'serial' modes.
 * Written in typescript so intellisense works great.
 * No dependencies. Extremely small.
 
@@ -38,8 +37,8 @@ describe('Group 1', () => {
 
 
 ```js
-const { describe, test, otest, xtest, setOptions } = require('nano-test-runner');
-const assert = require('assert');
+import { xdescribe, odescribe, describe, it, oit, xit, setOptions, run, basicAssert } from '../index';
+import * as assert from 'assert';
 
 /*
  CONFIG (optional)
@@ -48,19 +47,19 @@ const assert = require('assert');
    suppressConsole - suppress console.log, console.warn, console.error during the test run
      options: true | false  (default true)
 */
-setOptions({ runPattern: 'serial', suppressConsole: true });
+setOptions({ suppressConsole: false });
 
 describe('Group 1', () => {
   run(() => {
     // Run block that can be used setup test
   });
 
-  test('Sync Example', () => {
-    assert.equal('hello', 'hello', 'Strings should match');
-    assert.equal('world', 'world', 'Strings should match');
+  it('Sync Example', () => {
+    basicAssert('Strings should match', 'hello' === 'hello');
+    basicAssert('Strings should match 2', 'world' === 'world');
   });
 
-  test('Sync Example with expected error', () => {
+  it('Sync Example with expected error', () => {
     assert.throws(() => {
       // code...
       throw new Error('Expected sync error');
@@ -69,16 +68,16 @@ describe('Group 1', () => {
 
   run(async () => {
     // Async run block that can be used setup test
-    await new Promise((r) => setTimeout(() => r(), 300));
+    await new Promise<void>((r) => setTimeout(() => r(), 300));
   });
 
-  test('Async Example', async () => {
+  it('Async Example', async () => {
     // Notice the only thing changed was making this an async function
     // code...
-    await new Promise((r) => setTimeout(() => r(), 500));
+    await new Promise<void>((r) => setTimeout(() => r(), 500));
   });
 
-  test('Async Example with Expected Error', async () => {
+  it('Async Example with Expected Error', async () => {
     await assert.rejects(async () => {
       // Notice we await the assert.reject
       // code...
@@ -86,22 +85,38 @@ describe('Group 1', () => {
     });
   });
 
-  test('Example Error', () => {
-    assert.equal(5, 10);
-  });
+  // it('Example Error', () => {
+  //   assert.strictEqual(5, 10);
+  // });
 
-  xtest('Example Test Being Skipped', () => {
+  xit('Example Test Being Skipped', () => {
     // This test is currently being skipped due to the xtest
-    assert.equal(5, 5);
+    assert.strictEqual(5, 5);
   });
 
   /*
   // Currently commented out but if uncommitted would only run this test
   otest('Example Test with Only', () => {
-    assert.equal(5, 5);
+    assert.strictEqual(5, 5);
   });
   */
 });
+
+describe('Group 2', () => {
+  run(() => {
+    // Run block that can be used setup test
+    console.log('Run block in group 2');
+  });
+
+  it('Another random test 1', () => {
+    assert.strictEqual('hello', 'hello', 'Strings should match');
+  });
+
+  it('Another random test 2', () => {
+    assert.strictEqual('hello', 'hello', 'Strings should match');
+  });
+});
+
 
 ```
 
@@ -133,7 +148,6 @@ For small to medium projects normal test runners are problematic for various rea
 ### Potential Future Additions
 
 * Print out "In Progress" with the test description when executing
-* Add `xdescribe` and `odescribe` functionality
 * Directory scanner that generate test files that can easily be debugged with watch functionality so it runs on file changes
 * Add a max execution time option for async tests
 

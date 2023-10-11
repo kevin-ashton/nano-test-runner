@@ -1,12 +1,13 @@
 {
   "name": "nano-test-runner",
-  "version": "1.2.6",
+  "version": "2.0.0",
   "description": "A simple test runner for node for high developer productivity",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "scripts": {
     "ts-watch": "tsc -w",
     "ts-build": "tsc",
+    "publish": "npm publish",
     "test": "yarn ts-build && node dist/examples/full-example.js"
   },
   "bugs": {

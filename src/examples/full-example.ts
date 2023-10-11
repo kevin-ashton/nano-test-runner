@@ -1,4 +1,4 @@
-import { xdescribe, odescribe, describe, test, otest, xtest, setOptions, run } from '../index';
+import { xdescribe, odescribe, describe, it, oit, xit, setOptions, run, basicAssert } from '../index';
 import * as assert from 'assert';
 
 /*
@@ -8,19 +8,19 @@ import * as assert from 'assert';
    suppressConsole - suppress console.log, console.warn, console.error during the test run
      options: true | false  (default true)
 */
-setOptions({ runPattern: 'serial', suppressConsole: true });
+setOptions({ suppressConsole: false });
 
 describe('Group 1', () => {
   run(() => {
     // Run block that can be used setup test
   });
 
-  test('Sync Example', () => {
-    assert.strictEqual('hello', 'hello', 'Strings should match');
-    assert.strictEqual('world', 'world', 'Strings should match');
+  it('Sync Example', () => {
+    basicAssert('Strings should match', 'hello' === 'hello');
+    basicAssert('Strings should match 2', 'world' === 'world');
   });
 
-  test('Sync Example with expected error', () => {
+  it('Sync Example with expected error', () => {
     assert.throws(() => {
       // code...
       throw new Error('Expected sync error');
@@ -29,16 +29,16 @@ describe('Group 1', () => {
 
   run(async () => {
     // Async run block that can be used setup test
-    await new Promise((r) => setTimeout(() => r(), 300));
+    await new Promise<void>((r) => setTimeout(() => r(), 300));
   });
 
-  test('Async Example', async () => {
+  it('Async Example', async () => {
     // Notice the only thing changed was making this an async function
     // code...
-    await new Promise((r) => setTimeout(() => r(), 500));
+    await new Promise<void>((r) => setTimeout(() => r(), 500));
   });
 
-  test('Async Example with Expected Error', async () => {
+  it('Async Example with Expected Error', async () => {
     await assert.rejects(async () => {
       // Notice we await the assert.reject
       // code...
@@ -46,11 +46,11 @@ describe('Group 1', () => {
     });
   });
 
-  test('Example Error', () => {
+  it('Example Error', () => {
     assert.strictEqual(5, 10);
   });
 
-  xtest('Example Test Being Skipped', () => {
+  xit('Example Test Being Skipped', () => {
     // This test is currently being skipped due to the xtest
     assert.strictEqual(5, 5);
   });
@@ -63,18 +63,17 @@ describe('Group 1', () => {
   */
 });
 
-
 describe('Group 2', () => {
   run(() => {
     // Run block that can be used setup test
     console.log('Run block in group 2');
   });
 
-  test('Another random test 1', () => {
+  it('Another random test 1', () => {
     assert.strictEqual('hello', 'hello', 'Strings should match');
   });
 
-  test('Another random test 2', () => {
+  it('Another random test 2', () => {
     assert.strictEqual('hello', 'hello', 'Strings should match');
   });
-})
+});

@@ -5,7 +5,6 @@ import { GroupBlock, executeFn, Config } from './helpers/model';
  * ************* */
 
 let config: Config = {
-  runPattern: 'serial',
   suppressConsole: true
 };
 let totalPassed = 0;
@@ -27,9 +26,16 @@ const originalConsoleWarn = console.warn;
  * ************* */
 
 // Forces them to put a string
-export function basicAssert(v1: boolean, msg: string) {
+export function basicAssert(msg: string, v1: boolean) {
   if (!v1) {
     throw msg;
+  }
+  const x = workQueue[currentDescribeIndex].executeQueue[currentTestIndex];
+  if (x && x.type === 'test') {
+    if (!x.basicAssertDescriptions) {
+      x.basicAssertDescriptions = [];
+    }
+    x.basicAssertDescriptions.push(msg);
   }
 }
 
@@ -41,21 +47,21 @@ export const originalConsole = {
 
 export const setOptions = (c: Config) => (config = c);
 
-export function test(description: string, fn: executeFn) {
-  processTest(description, fn, { only: false, skip: false });
+export function it(description: string, fn: executeFn) {
+  queueTestFn(description, fn, { only: false, skip: false });
 }
 
 export function run(fn: executeFn) {
-  processRun(fn);
+  queueRunFn(fn);
 }
 
-export function xtest(description: string, fn: executeFn) {
-  processTest(description, fn, { only: false, skip: true });
+export function xit(description: string, fn: executeFn) {
+  queueTestFn(description, fn, { only: false, skip: true });
 }
 
-export function otest(description: string, fn: executeFn) {
+export function oit(description: string, fn: executeFn) {
   onlyActivated = true;
-  processTest(description, fn, { only: true, skip: false });
+  queueTestFn(description, fn, { only: true, skip: false });
 }
 
 let oDescribePresent = false;
@@ -102,7 +108,7 @@ export function describe(description: string, fn: () => void) {
  * CORE
  * ************* */
 
-function processRun(fn: executeFn) {
+function queueRunFn(fn: executeFn) {
   const describeIndex = workQueue.length - 1;
   workQueue[describeIndex].executeQueue.push({
     type: 'run',
@@ -116,7 +122,8 @@ function processRun(fn: executeFn) {
   });
 }
 
-function processTest(description: string, fn: executeFn, options: { skip: boolean; only: boolean }) {
+// let describeIndex = 0;
+function queueTestFn(description: string, fn: executeFn, options: { skip: boolean; only: boolean }) {
   totalTests += 1;
   const describeIndex = workQueue.length - 1;
   const testIndex = workQueue[describeIndex].executeQueue.length;
@@ -158,8 +165,10 @@ function processTest(description: string, fn: executeFn, options: { skip: boolea
   });
 }
 
-async function startEngine() {
+let currentDescribeIndex = 0;
+let currentTestIndex = 0;
 
+async function startEngine() {
   startEngineTimeMs = Date.now();
   // suppress output if needed
   if (config.suppressConsole) {
@@ -169,53 +178,19 @@ async function startEngine() {
   }
 
   originalConsoleLog('');
-  if (config.runPattern === 'serial') {
-    for (let i = 0; i < workQueue.length; i++) {
-      const wq = workQueue[i];
-      reportDescribe(i);
-      for (let k = 0; k < wq.executeQueue.length; k++) {
-        const t = wq.executeQueue[k];
-        await t.fn();
-        if (t.type === 'test') {
-          reportTest(i, k);
-        }
+  for (let i = 0; i < workQueue.length; i++) {
+    currentDescribeIndex = i;
+    const wq = workQueue[i];
+    reportDescribe(i);
+    for (let k = 0; k < wq.executeQueue.length; k++) {
+      currentTestIndex = k;
+      const t = wq.executeQueue[k];
+      await t.fn();
+      if (t.type === 'test') {
+        reportTest(i, k);
       }
-      originalConsoleLog('');
     }
-  } else if (config.runPattern === 'parallel') {
-    const fns: any = [];
-    workQueue.forEach((wq) => {
-      wq.executeQueue.forEach((t) => {
-        fns.push(t.fn());
-      });
-    });
-
-    const progressInterval = setInterval(() => {
-      printProgress(
-        `STATUS passed: ${color.green(`${totalPassed}`)}   failed: ${color.red(
-          `${totalFailed}`
-        )}   skipped: ${color.yellow(`${totalSkipped}`)}   remaining: ${
-          totalTests - (totalPassed + totalFailed + totalSkipped)
-        } `
-      );
-    }, 1000);
-    await Promise.all(fns);
-    clearInterval(progressInterval);
     originalConsoleLog('');
-    originalConsoleLog('');
-
-    // Print results
-    workQueue.forEach((wq, index) => {
-      reportDescribe(index);
-      wq.executeQueue.forEach((t, tIndex) => {
-        if (t.type === 'test') {
-          reportTest(index, tIndex);
-        }
-      });
-      originalConsoleLog('');
-    });
-  } else {
-    throw new Error('Unknown runPattern');
   }
 
   printSummaryAndFinish();
@@ -232,6 +207,11 @@ function reportTest(describeIndex: number, testIndex: number) {
     originalConsoleLog(`${color.gray(`  - ${t.description}`)} `);
   } else if (t.passed) {
     originalConsoleLog(`${color.green(`  ✓ ${t.description}`)}   ${t.timeElapsedMS}ms`);
+    if (t.basicAssertDescriptions) {
+      t.basicAssertDescriptions.forEach((d) => {
+        originalConsoleLog(`${color.green(`    - ${d}`)}`);
+      });
+    }
   } else if (!t.passed) {
     originalConsoleLog(`${color.red(`  ✗ ${t.description}`)}   ${t.timeElapsedMS}ms`);
   }
@@ -269,7 +249,7 @@ function printSummaryAndFinish() {
   originalConsoleLog(`Total Tests Passed:  ${color.green(`${totalPassed}`)}`);
   originalConsoleLog(`Total Tests Failed:  ${color.red(`${totalFailed}`)}`);
   originalConsoleLog(`Total Tests Skipped: ${color.yellow(`${totalSkipped}`)}`);
-  originalConsoleLog(`Total Time: ${color.cyan(`${Date.now() - startEngineTimeMs }ms`)}`);
+  originalConsoleLog(`Total Time: ${color.cyan(`${Date.now() - startEngineTimeMs}ms`)}`);
   if (errors.length > 0) {
     originalConsoleLog('');
     originalConsoleLog(color.red('----------'));
