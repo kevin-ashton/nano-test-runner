@@ -11,7 +11,7 @@ export interface Test {
   only?: boolean;
   passed?: boolean;
   error?: any;
-  basicAssertDescriptions?: string[]
+  basicStoryDescriptions?: string[]
 }
 
 export interface Run {

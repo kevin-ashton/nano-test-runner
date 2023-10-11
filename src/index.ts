@@ -25,19 +25,25 @@ const originalConsoleWarn = console.warn;
  * EXPORTS
  * ************* */
 
-// Forces them to put a string
-export function basicAssert(v1: boolean, msg?: string) {
+export function basicAssert(v1: boolean, lid: string) {
   if (!v1) {
-    throw msg || 'basicAssert generic error';
+    throw `basic assert ${lid}`;
+  }
+}
+
+// Will output in summary display to tell a larger testing story
+export function basicStory(msg: string, v1: boolean) {
+  if (!v1) {
+    throw msg;
   }
 
   if (msg) {
     const x = workQueue[currentDescribeIndex].executeQueue[currentTestIndex];
     if (x && x.type === 'test') {
-      if (!x.basicAssertDescriptions) {
-        x.basicAssertDescriptions = [];
+      if (!x.basicStoryDescriptions) {
+        x.basicStoryDescriptions = [];
       }
-      x.basicAssertDescriptions.push(msg);
+      x.basicStoryDescriptions.push(msg);
     }
   }
 }
@@ -210,8 +216,8 @@ function reportTest(describeIndex: number, testIndex: number) {
     originalConsoleLog(`${color.gray(`  - ${t.description}`)} `);
   } else if (t.passed) {
     originalConsoleLog(`${color.green(`  ✓ ${t.description}`)}   ${t.timeElapsedMS}ms`);
-    if (t.basicAssertDescriptions) {
-      t.basicAssertDescriptions.forEach((d) => {
+    if (t.basicStoryDescriptions) {
+      t.basicStoryDescriptions.forEach((d) => {
         originalConsoleLog(`${color.green(`    - ${d}`)}`);
       });
     }

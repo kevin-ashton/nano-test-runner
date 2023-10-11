@@ -1,4 +1,4 @@
-import { xdescribe, odescribe, describe, it, oit, xit, setOptions, run, basicAssert } from '../index';
+import { xdescribe, odescribe, describe, it, oit, xit, setOptions, run, basicAssert, basicStory } from '../index';
 import * as assert from 'assert';
 
 /*
@@ -16,8 +16,8 @@ describe('Group 1', () => {
   });
 
   it('Sync Example', () => {
-    basicAssert('hello' === 'hello', 'Strings should match');
-    basicAssert('world' === 'world');
+    basicStory('Strings should match', 'hello' === 'hello');
+    basicAssert('world' === 'world', 'L9s1unY6L');
   });
 
   it('Sync Example with expected error', () => {
