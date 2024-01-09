@@ -44,9 +44,9 @@ export function basicAssertNotEqual(v1: any, v2: any, lid: string) {
 }
 
 // Will output in summary display to tell a larger testing story
-export function basicStory(msg: string, v1: boolean) {
+export function basicStory(msg: string, v1: boolean, lid: string) {
   if (!v1) {
-    throw msg;
+    throw msg + ` ${lid}`;
   }
 
   if (msg) {
@@ -61,9 +61,9 @@ export function basicStory(msg: string, v1: boolean) {
 }
 
 // Will output in summary display to tell a larger testing story
-export function basicStoryEqual(msg: string, v1: any, v2: any) {
+export function basicStoryEqual(msg: string, v1: any, v2: any, lid: string) {
   if (v1 !== v2) {
-    throw msg + ` DETAILS: ${JSON.stringify(v1)} !== ${JSON.stringify(v2)}}`;
+    throw msg + ` ${lid} DETAILS: ${JSON.stringify(v1)} !== ${JSON.stringify(v2)}}`;
   }
 
   if (msg) {
@@ -77,9 +77,9 @@ export function basicStoryEqual(msg: string, v1: any, v2: any) {
   }
 }
 
-export function basicStoryNotEqual(msg: string, v1: any, v2: any) {
+export function basicStoryNotEqual(msg: string, v1: any, v2: any, lid: string) {
   if (v1 === v2) {
-    throw msg + ` DETAILS: ${JSON.stringify(v1)} === ${JSON.stringify(v2)}}`;
+    throw msg + `${lid} DETAILS: ${JSON.stringify(v1)} === ${JSON.stringify(v2)}}`;
   }
 
   if (msg) {

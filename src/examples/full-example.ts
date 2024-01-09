@@ -31,17 +31,17 @@ describe('Group 1', () => {
   });
 
   it('Sync Example', () => {
-    basicStory('Strings should match', 'hello' === 'hello');
-    basicStoryEqual('Strings should match2', 'hello', 'hello');
+    basicStory('Strings should match', 'hello' === 'hello', 'AEC3flcxD7');
+    basicStoryEqual('Strings should match2', 'hello', 'hello', 'VZsFwlacgK');
     basicAssert('world' === 'world', 'L9s1unY6L');
   });
 
   it('Basic story equal fail', () => {
-    basicStoryEqual('Strings should match', 'hello', 'hello1');
+    basicStoryEqual('Strings should match', 'hello', 'hello1', 'bWGHMbh2dN');
   });
 
   it('Basic story not equal fail', () => {
-    basicStoryNotEqual('Strings should match', 'hello', 'hello');
+    basicStoryNotEqual('Strings should match', 'hello', 'hello', 'jkvf15qytM');
   });
 
   it('Fail Example 2', () => {
