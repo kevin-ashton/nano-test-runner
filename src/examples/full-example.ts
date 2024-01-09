@@ -10,7 +10,11 @@ import {
   basicAssert,
   basicStory,
   originalConsole as console,
-  basicExpectReject
+  basicExpectReject,
+  basicAssertEqual,
+  basicStoryEqual,
+  basicAssertNotEqual,
+  basicStoryNotEqual
 } from '../index';
 import * as assert from 'assert';
 
@@ -28,7 +32,28 @@ describe('Group 1', () => {
 
   it('Sync Example', () => {
     basicStory('Strings should match', 'hello' === 'hello');
+    basicStoryEqual('Strings should match2', 'hello', 'hello');
     basicAssert('world' === 'world', 'L9s1unY6L');
+  });
+
+  it('Basic story equal fail', () => {
+    basicStoryEqual('Strings should match', 'hello', 'hello1');
+  });
+
+  it('Basic story not equal fail', () => {
+    basicStoryNotEqual('Strings should match', 'hello', 'hello');
+  });
+
+  it('Fail Example 2', () => {
+    basicAssertEqual('world!', 'world', '4QQ6zdLynt');
+  });
+
+  it('Fail Example 3', () => {
+    basicAssertNotEqual('world', 'world', 'L9m3iWI6DW');
+  });
+
+  it('Not Equal Working', () => {
+    basicAssertNotEqual('world', 'world12', 'kznGUbLxFx');
   });
 
   it('Sync Example with expected error', () => {

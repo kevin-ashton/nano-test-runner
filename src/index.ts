@@ -31,10 +31,55 @@ export function basicAssert(v1: boolean, lid: string) {
   }
 }
 
+export function basicAssertEqual(v1: any, v2: any, lid: string) {
+  if (v1 !== v2) {
+    throw `basic equal assert ${lid} DETAILS: ${JSON.stringify(v1)} !== ${JSON.stringify(v2)}`;
+  }
+}
+
+export function basicAssertNotEqual(v1: any, v2: any, lid: string) {
+  if (v1 === v2) {
+    throw `basic not equal assert ${lid} DETAILS: ${JSON.stringify(v1)} === ${JSON.stringify(v2)} `;
+  }
+}
+
 // Will output in summary display to tell a larger testing story
 export function basicStory(msg: string, v1: boolean) {
   if (!v1) {
     throw msg;
+  }
+
+  if (msg) {
+    const x = workQueue[currentDescribeIndex].executeQueue[currentTestIndex];
+    if (x && x.type === 'test') {
+      if (!x.basicStoryDescriptions) {
+        x.basicStoryDescriptions = [];
+      }
+      x.basicStoryDescriptions.push(msg);
+    }
+  }
+}
+
+// Will output in summary display to tell a larger testing story
+export function basicStoryEqual(msg: string, v1: any, v2: any) {
+  if (v1 !== v2) {
+    throw msg + ` DETAILS: ${JSON.stringify(v1)} !== ${JSON.stringify(v2)}}`;
+  }
+
+  if (msg) {
+    const x = workQueue[currentDescribeIndex].executeQueue[currentTestIndex];
+    if (x && x.type === 'test') {
+      if (!x.basicStoryDescriptions) {
+        x.basicStoryDescriptions = [];
+      }
+      x.basicStoryDescriptions.push(msg);
+    }
+  }
+}
+
+export function basicStoryNotEqual(msg: string, v1: any, v2: any) {
+  if (v1 === v2) {
+    throw msg + ` DETAILS: ${JSON.stringify(v1)} === ${JSON.stringify(v2)}}`;
   }
 
   if (msg) {
@@ -58,10 +103,10 @@ export async function basicExpectReject(p: {
     await p.fn();
   } catch (e) {
     errorThrown = true;
-    p.validateError(e)
+    p.validateError(e);
   }
-  if(errorThrown === false) {
-    throw new Error(`Promise was not rejected as expected. lid: ${p.lid}`)
+  if (errorThrown === false) {
+    throw new Error(`Promise was not rejected as expected. lid: ${p.lid}`);
   }
 }
 
