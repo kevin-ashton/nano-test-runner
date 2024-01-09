@@ -7,13 +7,13 @@ import {
   xit,
   setOptions,
   run,
-  basicAssert,
-  basicStory,
-  originalConsole as console,
+  originalConsole,
   basicExpectReject,
+  basicAssert,
   basicAssertEqual,
-  basicStoryEqual,
   basicAssertNotEqual,
+  basicStory,
+  basicStoryEqual,
   basicStoryNotEqual
 } from '../index';
 import * as assert from 'assert';

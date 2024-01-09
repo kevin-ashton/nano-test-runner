@@ -13,24 +13,8 @@ A simple test runner for node for high developer productivity
 
 1. Add to project: `yarn add nano-test-runner` or `npm install nano-test-runner`
 
-2. Create a file and add the following
 
-```js
-const { describe, test } = require('nano-test-runner');
-const assert = require('assert');
-
-describe('Group 1', () => {
-  test('Test 1', () => {
-    assert.equal(1, 1, 'Numbers should equal');
-    assert.equal('hello', 'hello', 'Strings should be equal');
-  });
-});
-```
-
-3. Run the file `node example-test.js`
 <img src="https://github.com/kevin-ashton/nano-test-runner/blob/master/assets/simple-example.png?raw=true" width="600" />
-
-
 
 
 ## Full Example
@@ -46,10 +30,14 @@ import {
   xit,
   setOptions,
   run,
+  originalConsole,
+  basicExpectReject,
   basicAssert,
+  basicAssertEqual,
+  basicAssertNotEqual,
   basicStory,
-  originalConsole as console,
-  basicExpectReject
+  basicStoryEqual,
+  basicStoryNotEqual
 } from '../index';
 import * as assert from 'assert';
 
@@ -66,8 +54,29 @@ describe('Group 1', () => {
   });
 
   it('Sync Example', () => {
-    basicStory('Strings should match', 'hello' === 'hello');
+    basicStory('Strings should match', 'hello' === 'hello', 'AEC3flcxD7');
+    basicStoryEqual('Strings should match2', 'hello', 'hello', 'VZsFwlacgK');
     basicAssert('world' === 'world', 'L9s1unY6L');
+  });
+
+  it('Basic story equal fail', () => {
+    basicStoryEqual('Strings should match', 'hello', 'hello1', 'bWGHMbh2dN');
+  });
+
+  it('Basic story not equal fail', () => {
+    basicStoryNotEqual('Strings should match', 'hello', 'hello', 'jkvf15qytM');
+  });
+
+  it('Fail Example 2', () => {
+    basicAssertEqual('world!', 'world', '4QQ6zdLynt');
+  });
+
+  it('Fail Example 3', () => {
+    basicAssertNotEqual('world', 'world', 'L9m3iWI6DW');
+  });
+
+  it('Not Equal Working', () => {
+    basicAssertNotEqual('world', 'world12', 'kznGUbLxFx');
   });
 
   it('Sync Example with expected error', () => {
@@ -102,13 +111,13 @@ describe('Group 1', () => {
       },
       validateError: (e) => {
         // Ensure the error is what you expect
-        basicAssert(e.message === 'EXAMPLE_ERROR_MESSAGE', 'h7gNKWkPS');
+        basicAssert(e.message === EXAMPLE_ERROR_MESSAGE, 'h7gNKWkPS');
       },
       lid: 'RW_IV4dSz'
     });
   });
 
-  xit('Example Error', () => {
+  it('Example Error', () => {
     assert.strictEqual(5, 10);
   });
 
@@ -151,6 +160,7 @@ Note: `xtest` and `otest` where used in place of the somewhat common `test.skip`
 
 * Currently does not scan your directories to find your test files. Rather you need to manually create a file that imports your test files. Granted this is more work but it allows us to eliminate globals and provides an easy debugging experience. In the future the ability to automatically generate this test entry point will likely be added.
 * Currently does not have watch functionality.
+* Does not support nesting.
 
 
 ## Why
