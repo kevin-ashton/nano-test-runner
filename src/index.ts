@@ -27,25 +27,25 @@ const originalConsoleWarn = console.warn;
 
 export function basicAssert(v1: boolean, lid: string) {
   if (!v1) {
-    throw `basic assert ${lid}`;
+    throw `basic assert error (${lid})`;
   }
 }
 
 export function basicAssertEqual(v1: any, v2: any, lid: string) {
   if (v1 !== v2) {
-    throw `basic equal assert ${lid} DETAILS: ${JSON.stringify(v1)} !== ${JSON.stringify(v2)}`;
+    throw `basic equal assert error (${lid}) DETAILS: ${JSON.stringify(v1)} !== ${JSON.stringify(v2)}`;
   }
 }
 
 export function basicAssertNotEqual(v1: any, v2: any, lid: string) {
   if (v1 === v2) {
-    throw `basic not equal assert ${lid} DETAILS: ${JSON.stringify(v1)} === ${JSON.stringify(v2)} `;
+    throw `basic not equal assert error (${lid}) DETAILS: ${JSON.stringify(v1)} === ${JSON.stringify(v2)} `;
   }
 }
 
 // Will output in summary display to tell a larger testing story
 export function basicStory(msg: string, v1: boolean, lid: string) {
-  const msgWithLid = msg + ` ${lid}`;
+  const msgWithLid = msg + ` (${lid})`;
   if (!v1) {
     throw msgWithLid;
   }
@@ -63,7 +63,7 @@ export function basicStory(msg: string, v1: boolean, lid: string) {
 
 // Will output in summary display to tell a larger testing story
 export function basicStoryEqual(msg: string, v1: any, v2: any, lid: string) {
-  const msgWithLid = msg + ` ${lid}`;
+  const msgWithLid = msg + ` (${lid})`;
   if (v1 !== v2) {
     throw `${msgWithLid} DETAILS: ${JSON.stringify(v1)} !== ${JSON.stringify(v2)}}`;
   }
@@ -80,7 +80,7 @@ export function basicStoryEqual(msg: string, v1: any, v2: any, lid: string) {
 }
 
 export function basicStoryNotEqual(msg: string, v1: any, v2: any, lid: string) {
-  const msgWithLid = msg + ` ${lid}`;
+  const msgWithLid = msg + ` (${lid})`;
   if (v1 === v2) {
     throw `${msgWithLid} DETAILS: ${JSON.stringify(v1)} !== ${JSON.stringify(v2)}}`;
   }
@@ -109,15 +109,9 @@ export async function basicExpectReject(p: {
     p.validateError(e);
   }
   if (errorThrown === false) {
-    throw new Error(`Promise was not rejected as expected. lid: ${p.lid}`);
+    throw new Error(`Promise was not rejected as expected. (${p.lid})`);
   }
 }
-
-// export function await basicExpectReject(async () => {
-//     // If this doesn't throw than error
-//   }, e => {
-//     // If this throws also throw an error
-//   }, 'X-WtS2xdg')
 
 export const originalConsole = {
   log: originalConsoleLog,
@@ -127,30 +121,30 @@ export const originalConsole = {
 
 export const setOptions = (c: Config) => (config = c);
 
-export function it(description: string, fn: executeFn) {
-  queueTestFn(description, fn, { only: false, skip: false });
+export function it(description: string, lid: string, fn: executeFn) {
+  queueTestFn(`${description} (${lid})`, fn, { only: false, skip: false });
 }
 
 export function run(fn: executeFn) {
   queueRunFn(fn);
 }
 
-export function xit(description: string, fn: executeFn) {
-  queueTestFn(description, fn, { only: false, skip: true });
+export function xit(description: string, lid: string, fn: executeFn) {
+  queueTestFn(`${description} (${lid})`, fn, { only: false, skip: true });
 }
 
-export function oit(description: string, fn: executeFn) {
+export function oit(description: string, lid: string, fn: executeFn) {
   onlyActivated = true;
-  queueTestFn(description, fn, { only: true, skip: false });
+  queueTestFn(`${description} (${lid})`, fn, { only: true, skip: false });
 }
 
 let oDescribePresent = false;
 
-export function xdescribe(description: string, fn: () => void) {
-  originalConsoleLog(color.gray(`SKIPPING: ${description}`));
+export function xdescribe(description: string, lid: string, fn: () => void) {
+  originalConsoleLog(color.gray(`SKIPPING: ${description} (${lid})`));
 }
 
-export function odescribe(description: string, fn: () => void) {
+export function odescribe(description: string, lid: string, fn: () => void) {
   oDescribePresent = true;
   workQueue = [];
   originalConsoleLog(color.yellow(`------------------------------------------`));
@@ -164,11 +158,11 @@ export function odescribe(description: string, fn: () => void) {
   clearTimeout(pendingStartEngineTimeout);
   pendingStartEngineTimeout = setTimeout(() => startEngine(), 200);
 
-  workQueue.push({ description, executeQueue: [] });
+  workQueue.push({ description: `${description} (${lid})`, executeQueue: [] });
   fn();
 }
 
-export function describe(description: string, fn: () => void) {
+export function describe(description: string, lid: string, fn: () => void) {
   if (oDescribePresent) {
     return;
   }
@@ -180,7 +174,7 @@ export function describe(description: string, fn: () => void) {
   clearTimeout(pendingStartEngineTimeout);
   pendingStartEngineTimeout = setTimeout(() => startEngine(), 200);
 
-  workQueue.push({ description, executeQueue: [] });
+  workQueue.push({ description: `${description} (${lid})`, executeQueue: [] });
   fn();
 }
 
