@@ -45,50 +45,53 @@ export function basicAssertNotEqual(v1: any, v2: any, lid: string) {
 
 // Will output in summary display to tell a larger testing story
 export function basicStory(msg: string, v1: boolean, lid: string) {
+  const msgWithLid = msg + ` ${lid}`;
   if (!v1) {
-    throw msg + ` ${lid}`;
+    throw msgWithLid;
   }
 
-  if (msg) {
+  if (msgWithLid) {
     const x = workQueue[currentDescribeIndex].executeQueue[currentTestIndex];
     if (x && x.type === 'test') {
       if (!x.basicStoryDescriptions) {
         x.basicStoryDescriptions = [];
       }
-      x.basicStoryDescriptions.push(msg);
+      x.basicStoryDescriptions.push(msgWithLid);
     }
   }
 }
 
 // Will output in summary display to tell a larger testing story
 export function basicStoryEqual(msg: string, v1: any, v2: any, lid: string) {
+  const msgWithLid = msg + ` ${lid}`;
   if (v1 !== v2) {
-    throw msg + ` ${lid} DETAILS: ${JSON.stringify(v1)} !== ${JSON.stringify(v2)}}`;
+    throw `${msgWithLid} DETAILS: ${JSON.stringify(v1)} !== ${JSON.stringify(v2)}}`;
   }
 
-  if (msg) {
+  if (msgWithLid) {
     const x = workQueue[currentDescribeIndex].executeQueue[currentTestIndex];
     if (x && x.type === 'test') {
       if (!x.basicStoryDescriptions) {
         x.basicStoryDescriptions = [];
       }
-      x.basicStoryDescriptions.push(msg);
+      x.basicStoryDescriptions.push(msgWithLid);
     }
   }
 }
 
 export function basicStoryNotEqual(msg: string, v1: any, v2: any, lid: string) {
+  const msgWithLid = msg + ` ${lid}`;
   if (v1 === v2) {
-    throw msg + `${lid} DETAILS: ${JSON.stringify(v1)} === ${JSON.stringify(v2)}}`;
+    throw `${msgWithLid} DETAILS: ${JSON.stringify(v1)} !== ${JSON.stringify(v2)}}`;
   }
 
-  if (msg) {
+  if (msgWithLid) {
     const x = workQueue[currentDescribeIndex].executeQueue[currentTestIndex];
     if (x && x.type === 'test') {
       if (!x.basicStoryDescriptions) {
         x.basicStoryDescriptions = [];
       }
-      x.basicStoryDescriptions.push(msg);
+      x.basicStoryDescriptions.push(msgWithLid);
     }
   }
 }
@@ -292,6 +295,12 @@ function reportTest(describeIndex: number, testIndex: number) {
     }
   } else if (!t.passed) {
     originalConsoleLog(`${color.red(`  ✗ ${t.description}`)}   ${t.timeElapsedMS}ms`);
+    if (t.basicStoryDescriptions) {
+      t.basicStoryDescriptions.forEach((d) => {
+        originalConsoleLog(`${color.white(`    - ${d}`)}`);
+      });
+      originalConsoleLog(`    - ${color.red(`Error ocurred about here. See ERRORS below for more details.`)}`);
+    }
   }
 }
 

@@ -16,7 +16,6 @@ import {
   basicStoryEqual,
   basicStoryNotEqual
 } from '../index';
-import * as assert from 'assert';
 
 /*
  CONFIG (optional)
@@ -56,13 +55,6 @@ describe('Group 1', () => {
     basicAssertNotEqual('world', 'world12', 'kznGUbLxFx');
   });
 
-  it('Sync Example with expected error', () => {
-    assert.throws(() => {
-      // code...
-      throw new Error('Expected sync error');
-    });
-  });
-
   run(async () => {
     // Async run block that can be used setup test
     await new Promise<void>((r) => setTimeout(() => r(), 300));
@@ -95,12 +87,12 @@ describe('Group 1', () => {
   });
 
   it('Example Error', () => {
-    assert.strictEqual(5, 10);
+    basicAssertEqual(5, 10, '"zfDcXLfdqQ"');
   });
 
   xit('Example Test Being Skipped', () => {
     // This test is currently being skipped due to the xtest
-    assert.strictEqual(5, 5);
+    basicAssertEqual(5, 5, '"vSybvk8dQf"');
   });
 
   /*
@@ -118,10 +110,17 @@ describe('Group 2', () => {
   });
 
   it('Another random test 1', () => {
-    assert.strictEqual('hello', 'hello', 'Strings should match');
+    // A test where we expect nothing to be thrown
   });
+});
 
-  it('Another random test 2', () => {
-    assert.strictEqual('hello', 'hello', 'Strings should match');
+describe('Group 3', () => {
+  it('When do stories stop', () => {
+    basicStoryEqual('Story part 1', 1, 1, 'dMp7HeJ4kg');
+    basicStoryEqual('Story part 2', 1, 1, 'wxHc4X3CJv');
+    if (1 === 1) {
+      throw new Error('Stop here');
+    }
+    basicStoryEqual('Story part 3', 1, 1, 'AZfWB3dnXL');
   });
 });
