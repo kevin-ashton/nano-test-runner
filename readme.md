@@ -8,6 +8,11 @@ A simple test runner for node for high developer productivity
 * Handles async or normal functions automatically. You don't have to handle functions differently.
 * Written in typescript so intellisense works great.
 * No dependencies. Extremely small.
+* Forces you to insert location ids (lid) with most things for easy searching
+
+## Tools
+
+In order to facilate the inserting of nanoids for the `lid` parameters you should consider a VsCode plugin with a shortcut to generate them. [Nanoid Snippets](https://marketplace.visualstudio.com/items?itemName=kevin-ashton.vsc-nanoid-snippets) is one I build for this purpose, but there are others that work fine.
 
 ## Usage
 
@@ -39,7 +44,6 @@ import {
   basicStoryEqual,
   basicStoryNotEqual
 } from '../index';
-import * as assert from 'assert';
 
 /*
  CONFIG (optional)
@@ -48,42 +52,35 @@ import * as assert from 'assert';
 */
 setOptions({ suppressConsole: false });
 
-describe('Group 1', () => {
+describe('Group 1', 'zfcf8JILKR', () => {
   run(() => {
     // Run block that can be used setup test
   });
 
-  it('Sync Example', () => {
+  it('Sync Example', 'le5owKVv8U', () => {
     basicStory('Strings should match', 'hello' === 'hello', 'AEC3flcxD7');
     basicStoryEqual('Strings should match2', 'hello', 'hello', 'VZsFwlacgK');
     basicAssert('world' === 'world', 'L9s1unY6L');
   });
 
-  it('Basic story equal fail', () => {
+  it('Basic story equal fail', 'vw1fXwcvin', () => {
     basicStoryEqual('Strings should match', 'hello', 'hello1', 'bWGHMbh2dN');
   });
 
-  it('Basic story not equal fail', () => {
+  it('Basic story not equal fail', 'cEpveXKPKc', () => {
     basicStoryNotEqual('Strings should match', 'hello', 'hello', 'jkvf15qytM');
   });
 
-  it('Fail Example 2', () => {
+  it('Fail Example 2', 'M3k1Jg4Rfe', () => {
     basicAssertEqual('world!', 'world', '4QQ6zdLynt');
   });
 
-  it('Fail Example 3', () => {
+  it('Fail Example 3', '4gnAzlzkuJ', () => {
     basicAssertNotEqual('world', 'world', 'L9m3iWI6DW');
   });
 
-  it('Not Equal Working', () => {
+  it('Not Equal Working', 'x6qhCTUssZ', () => {
     basicAssertNotEqual('world', 'world12', 'kznGUbLxFx');
-  });
-
-  it('Sync Example with expected error', () => {
-    assert.throws(() => {
-      // code...
-      throw new Error('Expected sync error');
-    });
   });
 
   run(async () => {
@@ -91,7 +88,7 @@ describe('Group 1', () => {
     await new Promise<void>((r) => setTimeout(() => r(), 300));
   });
 
-  it('Async Example', async () => {
+  it('Async Example', 'YtGzqTvHhL', async () => {
     // Notice the only thing changed was making this an async function
     // code...
     await new Promise<void>((r) => setTimeout(() => r(), 500));
@@ -99,7 +96,7 @@ describe('Group 1', () => {
 
   const EXAMPLE_ERROR_MESSAGE = 'EXAMPLE_ERROR_MESSAGE';
 
-  it('Async Example with Expected Error', async () => {
+  it('Async Example with Expected Error', 'MqTeBxhBlZ', async () => {
     // basicExpectReject will fail if
     // 1) nothing is rejected
     // 2) if something is thrown during validateError
@@ -117,13 +114,13 @@ describe('Group 1', () => {
     });
   });
 
-  it('Example Error', () => {
-    assert.strictEqual(5, 10);
+  it('Example Error', 'zNtzTrwMIa', () => {
+    basicAssertEqual(5, 10, '"zfDcXLfdqQ"');
   });
 
-  xit('Example Test Being Skipped', () => {
+  xit('Example Test Being Skipped', 'NmciaSPPI4', () => {
     // This test is currently being skipped due to the xtest
-    assert.strictEqual(5, 5);
+    basicAssertEqual(5, 5, '"vSybvk8dQf"');
   });
 
   /*
@@ -134,18 +131,25 @@ describe('Group 1', () => {
   */
 });
 
-describe('Group 2', () => {
+describe('Group 2', 't0odz7nwKz', () => {
   run(() => {
     // Run block that can be used setup test
     console.log('Run block in group 2');
   });
 
-  it('Another random test 1', () => {
-    assert.strictEqual('hello', 'hello', 'Strings should match');
+  it('Another random test 1', '0HUqcxrEGs', () => {
+    // A test where we expect nothing to be thrown
   });
+});
 
-  it('Another random test 2', () => {
-    assert.strictEqual('hello', 'hello', 'Strings should match');
+describe('Group 3', 'AUWMCMujKg', () => {
+  it('When do stories stop', '9D1UcYsVBU', () => {
+    basicStoryEqual('Story part 1', 1, 1, 'dMp7HeJ4kg');
+    basicStoryEqual('Story part 2', 1, 1, 'wxHc4X3CJv');
+    if (1 === 1) {
+      throw new Error('Stop here');
+    }
+    basicStoryEqual('Story part 3', 1, 1, 'AZfWB3dnXL');
   });
 });
 
